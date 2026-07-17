@@ -2,10 +2,10 @@
 // Each method can be a single string OR an array of strings (e.g. multiple Cash Apps) —
 // if it's an array, one is picked at random per order and saved with the order itself.
 let PAYMENT_HANDLES = {
-  cashapp: "$FireOrderNJ",
-  applepay: "(551) 555-0134",
-  paypal: "paypal.me/fireordernj",
-  zelle: "pay@fireorder.app"
+  cashapp: "$3raqu1a", "$KasimeBernardJr",
+  applepay: "(404) 543-5509",
+  paypal: "paypal.me/a5sxe",
+  zelle: "(678) 923-4967"
 };
 
 fetch("orders.json")
