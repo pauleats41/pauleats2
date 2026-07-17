@@ -8,10 +8,10 @@ let PAYMENT_HANDLES = {
   zelle: "(678) 923-4967"
 };
 
-fetch("orders.json")
+const paymentHandlesReady = fetch("orders.json")
   .then(r => r.json())
   .then(data => { if (data.paymentHandles) PAYMENT_HANDLES = data.paymentHandles; })
-  .catch(() => { /* fallback values above still work */ });
+  .catch((err) => { console.error("Couldn't load orders.json — using fallback payment handles:", err); });
 
 function pickHandle(method) {
   const value = PAYMENT_HANDLES[method];
@@ -120,6 +120,8 @@ form.addEventListener("submit", async (e) => {
 
   sendBtn.disabled = true;
   sendBtn.textContent = "SENDING…";
+
+  await paymentHandlesReady;
 
   try {
     const screenshotUrl = await uploadToScreenshots(screenshotFile, "order");
