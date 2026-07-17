@@ -18,7 +18,7 @@ const widgetHTML = `
   <button class="chat-bubble-btn" id="chat-bubble-btn" aria-label="Open chat">💬</button>
   <div class="chat-widget" id="chat-widget">
     <div class="chat-widget-head">
-      <span>FireOrder chat</span>
+      <span>Paul Eats chat</span>
       <button id="chat-widget-close">✕</button>
     </div>
     <div class="chat-widget-messages" id="chat-widget-messages"></div>

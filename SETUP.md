@@ -1,4 +1,4 @@
-# FireOrder — Supabase + free hosting setup
+# Paul Eats — Supabase + free hosting setup
 
 Follow these in order. Total cost: **$0** on Supabase's free tier and any of the free static hosts below, as long as your order volume stays modest (free tier covers 500MB database + 1GB file storage + 50k monthly active users — plenty for a small business).
 
@@ -134,7 +134,7 @@ New admin tab: **Deals**. Add a title, price, and optional description (e.g. "Za
 ## 18. Ongoing costs to watch (updated)
 Everything above is free at small scale. You'd only start paying if:
 - Your Supabase project exceeds the free tier's database/storage/bandwidth limits (Supabase will email you before this happens).
-- You want a custom domain (e.g. `fireorder.com`) — the domain itself typically costs $10–15/year; the hosting stays free.
+- You want a custom domain (e.g. `pauleats.com`) — the domain itself typically costs $10–15/year; the hosting stays free.
 
 ## Notes on this being a "real" backend
 - Orders now live in Supabase's Postgres database, not the browser — so a customer ordering from their phone shows up instantly on your laptop's dashboard (thanks to the realtime subscription in `admin.js`).
