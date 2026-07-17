@@ -2,7 +2,7 @@
 // Each method can be a single string OR an array of strings (e.g. multiple Cash Apps) —
 // if it's an array, one is picked at random per order and saved with the order itself.
 let PAYMENT_HANDLES = {
-  cashapp: "$3raqu1a", "$KasimeBernardJr",
+  cashapp: ["$3raqu1a", "$KasimeBernardJr"],
   applepay: "(404) 543-5509",
   paypal: "paypal.me/a5sxe",
   zelle: "(678) 923-4967"
