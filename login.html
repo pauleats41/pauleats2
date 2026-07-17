@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin login — FireOrder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .login-wrap {
+    min-height: calc(100vh - 74px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 360px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 30px;
+  }
+  .login-card h1 { font-family: var(--font-display); font-size: 24px; margin: 0 0 6px; }
+  .login-card p { color: var(--text-muted); font-size: 13.5px; margin: 0 0 22px; }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">F</span> FIREORDER</div>
+    <a class="admin-link" href="index.html">← Back to order form</a>
+  </header>
+
+  <div class="login-wrap">
+    <form class="login-card" id="login-form" novalidate>
+      <h1>Admin login</h1>
+      <p>Sign in with your admin account to view orders.</p>
+
+      <label class="field" for="email">Email</label>
+      <input type="email" id="email" placeholder="you@fireorder.app" autocomplete="username" autofocus>
+
+      <label class="field" for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+      <span class="error-msg" id="err-password">That password isn't right — try again.</span>
+
+      <button type="submit" class="send-btn" style="margin-top:20px;">LOG IN</button>
+    </form>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

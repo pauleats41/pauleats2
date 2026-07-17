@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Track your order — FireOrder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">F</span> FIREORDER</div>
+    <a class="admin-link" href="index.html">← Back to order form</a>
+  </header>
+
+  <main class="order-wrap" style="max-width:480px;">
+    <div class="hero" style="padding-top:30px; padding-bottom:0;">
+      <h1 style="font-size:clamp(30px,5vw,40px);">TRACK YOUR <span>ORDER</span></h1>
+      <p>Enter your order number and the phone number you gave us.</p>
+    </div>
+
+    <form class="step" id="track-form" novalidate>
+      <label class="field" for="track-order-number">Order number</label>
+      <input type="text" id="track-order-number" placeholder="FO-1042" autocomplete="off">
+
+      <label class="field" for="track-phone">Phone number</label>
+      <input type="tel" id="track-phone" placeholder="(555) 123-4567" autocomplete="tel">
+
+      <span class="error-msg" id="track-error">We couldn't find that order — double check your order number and phone number.</span>
+
+      <button type="submit" class="send-btn" id="track-submit">TRACK ORDER</button>
+    </form>
+
+    <div class="step" id="track-result" style="display:none;"></div>
+  </main>
+
+  <p class="foot">FireOrder · Screenshot orders, delivered.</p>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="track.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Orders dashboard — FireOrder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-pending">
+
+  <div class="auth-loading" id="auth-loading">Checking access…</div>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">F</span> FIREORDER</div>
+    <div style="display:flex; gap:10px;">
+      <a class="admin-link" href="index.html">← Back to order form</a>
+      <button class="admin-link" id="logout-btn" style="cursor:pointer;">Log out</button>
+    </div>
+  </header>
+
+  <main class="admin-body">
+    <div class="admin-header">
+      <h1>Admin dashboard</h1>
+      <p>Orders, today's restaurants, the menu, and customer chat — all in one place.</p>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="orders">Orders</button>
+      <button class="admin-tab-btn" data-tab="store">Store Status</button>
+      <button class="admin-tab-btn" data-tab="restaurants">Today's Restaurants</button>
+      <button class="admin-tab-btn" data-tab="menu">Menu</button>
+      <button class="admin-tab-btn" data-tab="deals">Deals</button>
+      <button class="admin-tab-btn" data-tab="chat">Chat</button>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="admin-panel active" id="panel-orders">
+      <div class="stat-row" id="stat-row"></div>
+
+      <div class="toolbar">
+        <input type="text" id="search" placeholder="Search name, phone, address, order ID…">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="new">New</button>
+        <button class="filter-btn" data-filter="confirmed">Confirmed</button>
+        <button class="filter-btn" data-filter="delivered">Delivered</button>
+      </div>
+
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="order-rows"></tbody>
+      </table>
+    </div>
+
+    <!-- TODAY'S RESTAURANTS -->
+    <div class="admin-panel" id="panel-restaurants">
+      <p style="color:var(--text-muted); font-size:13.5px; margin-top:0;">Just the names — shown as chips on the homepage. Leave blank to show "Not set yet".</p>
+      <form class="restaurant-form" id="restaurant-form">
+        <label class="field" for="restaurant-1">Restaurant 1</label>
+        <input type="text" id="restaurant-1" placeholder="e.g. Buffalo Wild Wings">
+        <label class="field" for="restaurant-2">Restaurant 2</label>
+        <input type="text" id="restaurant-2" placeholder="e.g. Panda Express">
+        <label class="field" for="restaurant-3">Restaurant 3</label>
+        <input type="text" id="restaurant-3" placeholder="e.g. Chipotle">
+        <button type="submit" class="send-btn" style="margin-top:20px;">Save today's restaurants</button>
+      </form>
+    </div>
+
+    <!-- MENU -->
+    <div class="admin-panel" id="panel-menu">
+      <form class="menu-form-grid" id="menu-form">
+        <input type="text" id="mi-name" placeholder="Item name" required>
+        <input type="text" id="mi-category" placeholder="Category (e.g. Sides)">
+        <input type="text" id="mi-price" placeholder="Price (optional)">
+        <textarea id="mi-desc" placeholder="Description (optional)" style="grid-column: 1 / -1; min-height:50px;"></textarea>
+        <button type="submit" class="send-btn" style="grid-column: 1 / -1; margin-top:0;">Add item</button>
+      </form>
+      <div id="menu-admin-list" style="margin-top:20px;"></div>
+    </div>
+
+    <!-- STORE STATUS -->
+    <div class="admin-panel" id="panel-store">
+      <p style="color:var(--text-muted); font-size:13.5px; margin-top:0;">Toggle this off any time you need to stop taking orders — customers see your reason instead of the order form.</p>
+      <form class="restaurant-form" id="store-status-form">
+        <label class="field" for="store-open-toggle" style="display:flex; align-items:center; gap:10px; margin-top:16px;">
+          <input type="checkbox" id="store-open-toggle" style="width:auto;"> We're currently open
+        </label>
+        <label class="field" for="store-reason">Reason (shown to customers when closed)</label>
+        <textarea id="store-reason" placeholder="e.g. Stepped out for lunch, back at 2pm!"></textarea>
+        <button type="submit" class="send-btn" style="margin-top:20px;">Save store status</button>
+      </form>
+    </div>
+
+    <!-- DEALS -->
+    <div class="admin-panel" id="panel-deals">
+      <p style="color:var(--text-muted); font-size:13.5px; margin-top:0;">Combo deals customers can browse for pricing — e.g. "Zaxby's large meal + dessert, $10".</p>
+      <form class="menu-form-grid" id="deal-form">
+        <input type="text" id="deal-title" placeholder="Deal title (e.g. Zaxby's Large Meal + Dessert)" required style="grid-column: 1 / -1;">
+        <input type="text" id="deal-price" placeholder="Price (e.g. 10.00)">
+        <div></div>
+        <textarea id="deal-desc" placeholder="Details (optional)" style="grid-column: 1 / -1; min-height:50px;"></textarea>
+        <button type="submit" class="send-btn" style="grid-column: 1 / -1; margin-top:0;">Add deal</button>
+      </form>
+      <div id="deal-admin-list" style="margin-top:20px;"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="admin-panel" id="panel-chat">
+      <div class="chat-layout">
+        <div class="convo-list" id="convo-list"></div>
+        <div class="chat-thread">
+          <div class="chat-messages" id="admin-chat-messages">
+            <div class="chat-empty-state">Pick a conversation to view it.</div>
+          </div>
+          <div class="chat-reply-row">
+            <input type="text" id="admin-chat-input" placeholder="Type a reply…" disabled>
+            <button id="admin-chat-send" disabled>Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal" id="modal"></div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+  <script src="admin-store.js"></script>
+  <script src="admin-restaurants.js"></script>
+  <script src="admin-menu.js"></script>
+  <script src="admin-deals.js"></script>
+  <script src="admin-chat.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(`panel-${btn.dataset.tab}`).classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

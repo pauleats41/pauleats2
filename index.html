@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FireOrder — Send us your order</title>
+<meta name="description" content="Send a screenshot of what you want, your name, address, and number. Pay with CashApp, Apple Pay, PayPal, or Zelle." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">F</span> FIREORDER</div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span class="status-pill">Now taking orders</span>
+      <a class="admin-link" href="track.html">Track Order</a>
+      <a class="admin-link" href="deals.html">Deals</a>
+      <a class="admin-link" href="menu.html">Menu</a>
+      <a class="admin-link" href="admin.html">Admin →</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>SNAP IT.<br>SEND IT.<br><span>WE DELIVER.</span></h1>
+    <p>Screenshot your order from anywhere, drop your address, and pick how you want to pay. No accounts. No card processor. Just food.</p>
+    <div class="restaurant-strip" id="restaurant-strip"></div>
+  </section>
+
+  <div class="home-section" id="store-status-banner" style="display:none;"></div>
+
+  <main class="order-wrap">
+    <form id="order-form" novalidate>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <h2>Your order screenshot</h2>
+        </div>
+        <p class="step-sub">A picture of your cart from directly on the site such as buffalowildwings.com.</p>
+
+        <div class="dropzone" id="dropzone">
+          <strong>Add your screenshot</strong>
+          <small>Tap to upload · PNG, JPG, HEIC · up to 10 MB</small>
+          <input type="file" id="screenshot-input" accept="image/*" hidden>
+        </div>
+        <img id="preview" class="preview-img" alt="Order screenshot preview">
+        <span class="error-msg" id="err-screenshot">Add a screenshot of your order to continue.</span>
+
+        <label class="field" for="notes">Notes for the kitchen (optional)</label>
+        <textarea id="notes" placeholder="Allergies, substitutions, extra sauce…"></textarea>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <h2>Where's it going?</h2>
+        </div>
+
+        <label class="field" for="name">Full name</label>
+        <input type="text" id="name" placeholder="Jordan Smith" autocomplete="name">
+        <span class="error-msg" id="err-name">Enter your full name.</span>
+
+        <label class="field" for="phone">Phone number</label>
+        <input type="tel" id="phone" placeholder="(555) 123-4567" autocomplete="tel">
+        <span class="error-msg" id="err-phone">Enter a phone number we can reach you at.</span>
+
+        <label class="field" for="address">Delivery address</label>
+        <input type="text" id="address" placeholder="123 Main St, Apt 2, Secaucus, NJ" autocomplete="street-address">
+        <span class="error-msg" id="err-address">Enter your delivery address.</span>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <h2>How you paying?</h2>
+        </div>
+        <p class="step-sub">You'll get a handle to send to on the next screen.</p>
+
+        <div class="pay-grid" id="pay-grid">
+          <div class="pay-option" data-method="cashapp">
+            <div class="pay-badge" style="background:#00d64f">$</div>
+            <div><div class="pay-name">Cash App</div><div class="pay-note">Instant · No fees</div></div>
+          </div>
+          <div class="pay-option" data-method="applepay">
+            <div class="pay-badge" style="background:#e7e7e7">A</div>
+            <div><div class="pay-name">Apple Pay</div><div class="pay-note">Instant · No fees</div></div>
+          </div>
+          <div class="pay-option" data-method="paypal">
+            <div class="pay-badge" style="background:#3b99fc">P</div>
+            <div><div class="pay-name">PayPal</div><div class="pay-note">Instant · No fees</div></div>
+          </div>
+          <div class="pay-option" data-method="zelle">
+            <div class="pay-badge" style="background:#6d1ed4">Z</div>
+            <div><div class="pay-name">Zelle</div><div class="pay-note">Instant · No fees</div></div>
+          </div>
+        </div>
+        <span class="error-msg" id="err-payment">Pick how you'd like to pay.</span>
+      </div>
+
+      <button type="submit" class="send-btn" id="send-btn">SEND ORDER</button>
+      <p class="disclaimer">By sending, you agree we'll contact you at the number provided to confirm your order.</p>
+    </form>
+
+    <div class="confirm-card" id="confirm-card">
+      <div class="step-num" style="margin:0 auto 10px; width:36px; height:36px; font-size:16px;">✓</div>
+      <h3>Order sent — now send payment</h3>
+      <p style="color:var(--text-muted); margin:0;">Send your total to:</p>
+      <div class="confirm-handle" id="confirm-handle">$FireOrderNJ</div>
+      <p class="confirm-id">Order <span id="confirm-id"></span> · <strong>put this order number in the payment note</strong></p>
+
+      <div style="margin-top:20px; text-align:left;">
+        <label class="field" for="payment-screenshot-input" style="text-align:center;">Sent it? Upload a screenshot of the payment (optional but speeds up confirmation)</label>
+        <div class="dropzone" id="payment-dropzone">
+          <strong>Add payment screenshot</strong>
+          <small>Tap to upload</small>
+          <input type="file" id="payment-screenshot-input" accept="image/*" hidden>
+        </div>
+        <img id="payment-preview" class="preview-img" alt="Payment screenshot preview">
+        <button type="button" class="send-btn" id="payment-screenshot-btn" style="display:none;">Attach payment screenshot</button>
+        <p class="confirm-id" id="payment-screenshot-status"></p>
+      </div>
+
+      <p class="confirm-id" style="margin-top:16px;"><a href="#" id="confirm-track-link" style="color:var(--flame);">Track this order anytime →</a></p>
+    </div>
+  </main>
+
+  <section class="home-section">
+    <h2>Recent orders 🔥</h2>
+    <div class="recent-orders-grid" id="recent-orders-grid"></div>
+  </section>
+
+  <p class="foot">FireOrder · Screenshot orders, delivered.</p>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="store-status.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Today's 3 featured restaurants — just names, publicly readable
+    (async function loadRestaurants() {
+      const stripEl = document.getElementById("restaurant-strip");
+      const { data, error } = await supabaseClient
+        .from("featured_restaurants")
+        .select("*")
+        .order("slot", { ascending: true });
+
+      if (error || !data) { stripEl.innerHTML = ""; return; }
+
+      stripEl.innerHTML = data.map(r =>
+        r.name
+          ? `<span class="restaurant-chip">${r.name.replace(/</g, "&lt;")}</span>`
+          : `<span class="restaurant-chip empty">Not set yet</span>`
+      ).join("");
+    })();
+  </script>
+  <script src="recent-orders.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>
