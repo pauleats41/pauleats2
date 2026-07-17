@@ -1,5 +1,5 @@
 {
-  "greeting": "Hey! 👋 I'm the FireOrder bot. Ask me about hours, delivery, payment, or how ordering works — or type \"human\" anytime to reach a real person.",
+  "greeting": "Hey! 👋 I'm the Paul Eats Order bot. Ask me about hours, delivery, payment, or how ordering works — or type \"human\" anytime to reach a real person.",
   "fallback": "I'm not sure about that one — I'll flag this for a real person to answer. Hang tight, someone will reply right here soon.",
   "faqs": [
     {
