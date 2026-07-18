@@ -11,135 +11,241 @@
 </head>
 <body>
 
-  <header class="topbar">
+  <!-- ============ SPLASH ============ -->
+  <div class="splash-screen" id="splash-screen">
+    <div class="splash-mark">P</div>
+    <div class="splash-title">PAUL EATS</div>
+    <p class="splash-tagline">Snap it. Send it. We deliver.</p>
+    <button class="splash-continue" id="splash-continue">CONTINUE</button>
+  </div>
+
+  <!-- ============ FIXED TOP NAV ============ -->
+  <header class="topbar fixed-topbar">
     <div class="brand"><span class="brand-mark">P</span> PAUL EATS</div>
-    <div style="display:flex; align-items:center; gap:14px;">
-      <span class="status-pill">Now taking orders</span>
-      <a class="admin-link" href="track.html">Track Order</a>
-      <a class="admin-link" href="deals.html">Deals</a>
-      <a class="admin-link" href="menu.html">Menu</a>
-      <a class="admin-link" href="admin.html">Admin →</a>
-    </div>
+    <nav class="nav-links">
+      <a class="admin-link nav-link" data-target="section-order" href="#section-order">Place Order</a>
+      <a class="admin-link nav-link" data-target="section-track" href="#section-track">Track Order</a>
+      <a class="admin-link nav-link" data-target="section-deals" href="#section-deals">Deals</a>
+      <a class="admin-link nav-link" data-target="section-menu" href="#section-menu">Menu</a>
+      <a class="admin-link nav-link" data-target="section-admin" href="#section-admin">Admin</a>
+    </nav>
   </header>
 
-  <section class="hero">
-    <h1>SNAP IT.<br>SEND IT.<br><span>WE DELIVER.</span></h1>
-    <p>Screenshot your order from anywhere, drop your address, and pick how you want to pay. No accounts. No card processor. Just food.</p>
-    <div class="restaurant-strip" id="restaurant-strip"></div>
-  </section>
+  <!-- ============ MOBILE DOT RAIL ============ -->
+  <div class="dot-rail" id="dot-rail">
+    <button data-target="section-order" aria-label="Place Order"></button>
+    <button data-target="section-track" aria-label="Track Order"></button>
+    <button data-target="section-deals" aria-label="Deals"></button>
+    <button data-target="section-menu" aria-label="Menu"></button>
+    <button data-target="section-admin" aria-label="Admin"></button>
+  </div>
 
-  <div class="home-section" id="store-status-banner" style="display:none;"></div>
+  <!-- ============ SCROLL-SNAP SECTIONS ============ -->
+  <div class="scroll-container" id="scroll-container">
 
-  <main class="order-wrap">
-    <form id="order-form" novalidate>
-
-      <!-- Step 1 -->
-      <div class="step">
-        <div class="step-head">
-          <span class="step-num">1</span>
-          <h2>Your order screenshot</h2>
-        </div>
-        <p class="step-sub">A picture of your cart from directly on the site such as buffalowildwings.com.</p>
-
-        <div class="dropzone" id="dropzone">
-          <strong>Add your screenshot</strong>
-          <small>Tap to upload · PNG, JPG, HEIC · up to 10 MB</small>
-          <input type="file" id="screenshot-input" accept="image/*" hidden>
-        </div>
-        <img id="preview" class="preview-img" alt="Order screenshot preview">
-        <span class="error-msg" id="err-screenshot">Add a screenshot of your order to continue.</span>
-
-        <label class="field" for="notes">Notes for the kitchen (optional)</label>
-        <textarea id="notes" placeholder="Allergies, substitutions, extra sauce…"></textarea>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="step">
-        <div class="step-head">
-          <span class="step-num">2</span>
-          <h2>Where's it going?</h2>
+    <!-- 1. PLACE ORDER -->
+    <section class="snap-section" id="section-order">
+      <div class="snap-section-inner">
+        <div class="hero" style="padding-top:10px;">
+          <h1>SNAP IT.<br>SEND IT.<br><span>WE DELIVER.</span></h1>
+          <p>Screenshot your order from anywhere, drop your address, and pick how you want to pay. No accounts. No card processor. Just food.</p>
+          <div class="restaurant-strip" id="restaurant-strip"></div>
         </div>
 
-        <label class="field" for="name">Full name</label>
-        <input type="text" id="name" placeholder="Jordan Smith" autocomplete="name">
-        <span class="error-msg" id="err-name">Enter your full name.</span>
+        <div id="store-status-banner" style="display:none;"></div>
 
-        <label class="field" for="phone">Phone number</label>
-        <input type="tel" id="phone" placeholder="(555) 123-4567" autocomplete="tel">
-        <span class="error-msg" id="err-phone">Enter a phone number we can reach you at.</span>
+        <form id="order-form" novalidate>
 
-        <label class="field" for="address">Delivery address</label>
-        <input type="text" id="address" placeholder="123 Main St, Apt 2, Secaucus, NJ" autocomplete="street-address">
-        <span class="error-msg" id="err-address">Enter your delivery address.</span>
-      </div>
+          <!-- Step 1 -->
+          <div class="step">
+            <div class="step-head">
+              <span class="step-num">1</span>
+              <h2>Your order screenshot</h2>
+            </div>
+            <p class="step-sub">A picture of your cart from directly on the site such as buffalowildwings.com.</p>
 
-      <!-- Step 3 -->
-      <div class="step">
-        <div class="step-head">
-          <span class="step-num">3</span>
-          <h2>How you paying?</h2>
-        </div>
-        <p class="step-sub">You'll get a handle to send to on the next screen.</p>
+            <div class="dropzone" id="dropzone">
+              <strong>Add your screenshot</strong>
+              <small>Tap to upload · PNG, JPG, HEIC · up to 10 MB</small>
+              <input type="file" id="screenshot-input" accept="image/*" hidden>
+            </div>
+            <img id="preview" class="preview-img" alt="Order screenshot preview">
+            <span class="error-msg" id="err-screenshot">Add a screenshot of your order to continue.</span>
 
-        <div class="pay-grid" id="pay-grid">
-          <div class="pay-option" data-method="cashapp">
-            <div class="pay-badge" style="background:#00d64f">$</div>
-            <div><div class="pay-name">Cash App</div><div class="pay-note">Instant · No fees</div></div>
+            <label class="field" for="notes">Notes for the kitchen (optional)</label>
+            <textarea id="notes" placeholder="Allergies, substitutions, extra sauce…"></textarea>
           </div>
-          <div class="pay-option" data-method="applepay">
-            <div class="pay-badge" style="background:#e7e7e7">A</div>
-            <div><div class="pay-name">Apple Pay</div><div class="pay-note">Instant · No fees</div></div>
+
+          <!-- Step 2 -->
+          <div class="step">
+            <div class="step-head">
+              <span class="step-num">2</span>
+              <h2>Where's it going?</h2>
+            </div>
+
+            <label class="field" for="name">Full name</label>
+            <input type="text" id="name" placeholder="Jordan Smith" autocomplete="name">
+            <span class="error-msg" id="err-name">Enter your full name.</span>
+
+            <label class="field" for="phone">Phone number</label>
+            <input type="tel" id="phone" placeholder="(555) 123-4567" autocomplete="tel">
+            <span class="error-msg" id="err-phone">Enter a phone number we can reach you at.</span>
+
+            <label class="field" for="address">Delivery address</label>
+            <input type="text" id="address" placeholder="123 Main St, Apt 2, Secaucus, NJ" autocomplete="street-address">
+            <span class="error-msg" id="err-address">Enter your delivery address.</span>
           </div>
-          <div class="pay-option" data-method="paypal">
-            <div class="pay-badge" style="background:#3b99fc">P</div>
-            <div><div class="pay-name">PayPal</div><div class="pay-note">Instant · No fees</div></div>
+
+          <!-- Step 3: Deal picker -->
+          <div class="step">
+            <div class="step-head">
+              <span class="step-num">3</span>
+              <h2>Is this one of today's deals?</h2>
+            </div>
+            <p class="step-sub">Pick it here and we'll tell you the exact total to send — no guessing.</p>
+            <select id="deal-select">
+              <option value="">Not a deal — I'll say my total when I send payment</option>
+            </select>
           </div>
-          <div class="pay-option" data-method="zelle">
-            <div class="pay-badge" style="background:#6d1ed4">Z</div>
-            <div><div class="pay-name">Zelle</div><div class="pay-note">Instant · No fees</div></div>
+
+          <!-- Step 4 -->
+          <div class="step">
+            <div class="step-head">
+              <span class="step-num">4</span>
+              <h2>How you paying?</h2>
+            </div>
+            <p class="step-sub">You'll get a handle to send to on the next screen.</p>
+
+            <div class="pay-grid" id="pay-grid">
+              <div class="pay-option" data-method="cashapp">
+                <div class="pay-badge" style="background:#00d64f">$</div>
+                <div><div class="pay-name">Cash App</div><div class="pay-note">Instant · No fees</div></div>
+              </div>
+              <div class="pay-option" data-method="applepay">
+                <div class="pay-badge" style="background:#e7e7e7">A</div>
+                <div><div class="pay-name">Apple Pay</div><div class="pay-note">Instant · No fees</div></div>
+              </div>
+              <div class="pay-option" data-method="paypal">
+                <div class="pay-badge" style="background:#3b99fc">P</div>
+                <div><div class="pay-name">PayPal</div><div class="pay-note">Instant · No fees</div></div>
+              </div>
+              <div class="pay-option" data-method="zelle">
+                <div class="pay-badge" style="background:#6d1ed4">Z</div>
+                <div><div class="pay-name">Zelle</div><div class="pay-note">Instant · No fees</div></div>
+              </div>
+            </div>
+            <span class="error-msg" id="err-payment">Pick how you'd like to pay.</span>
           </div>
+
+          <button type="submit" class="send-btn" id="send-btn">SEND ORDER</button>
+          <p class="disclaimer">By sending, you agree we'll contact you at the number provided to confirm your order.</p>
+        </form>
+
+        <div class="confirm-card" id="confirm-card">
+          <div class="step-num" style="margin:0 auto 10px; width:36px; height:36px; font-size:16px;">✓</div>
+          <h3>Order sent — now send payment</h3>
+          <p style="color:var(--text-muted); margin:0;">Send your total to:</p>
+          <div class="confirm-handle" id="confirm-handle">$3raqu1a</div>
+
+          <div class="confirm-amount-row" id="confirm-amount-row" style="display:none;">
+            <div class="k">Total to send</div>
+            <div class="v" id="confirm-amount"></div>
+          </div>
+
+          <p class="confirm-id">Order <span id="confirm-id"></span> · <strong>put this order number in the payment note</strong></p>
+
+          <div style="margin-top:20px; text-align:left;">
+            <label class="field" for="payment-screenshot-input" style="text-align:center;">Sent it? Upload a screenshot of the payment (optional but speeds up confirmation)</label>
+            <div class="dropzone" id="payment-dropzone">
+              <strong>Add payment screenshot</strong>
+              <small>Tap to upload</small>
+              <input type="file" id="payment-screenshot-input" accept="image/*" hidden>
+            </div>
+            <img id="payment-preview" class="preview-img" alt="Payment screenshot preview">
+            <button type="button" class="send-btn" id="payment-screenshot-btn" style="display:none;">Attach payment screenshot</button>
+            <p class="confirm-id" id="payment-screenshot-status"></p>
+          </div>
+
+          <p class="confirm-id" style="margin-top:16px;"><a href="#" id="confirm-track-link" style="color:var(--flame);">Track this order anytime →</a></p>
+          <div style="text-align:center;"><a href="#" class="start-new-order" id="start-new-order-link">Start a new order instead</a></div>
         </div>
-        <span class="error-msg" id="err-payment">Pick how you'd like to pay.</span>
+
+        <section class="home-section">
+          <h2>Recent orders 🔥</h2>
+          <div class="recent-orders-grid" id="recent-orders-grid"></div>
+        </section>
       </div>
+    </section>
 
-      <button type="submit" class="send-btn" id="send-btn">SEND ORDER</button>
-      <p class="disclaimer">By sending, you agree we'll contact you at the number provided to confirm your order.</p>
-    </form>
-
-    <div class="confirm-card" id="confirm-card">
-      <div class="step-num" style="margin:0 auto 10px; width:36px; height:36px; font-size:16px;">✓</div>
-      <h3>Order sent — now send payment</h3>
-      <p style="color:var(--text-muted); margin:0;">Send your total to:</p>
-      <div class="confirm-handle" id="confirm-handle">$3raqu1a</div>
-      <p class="confirm-id">Order <span id="confirm-id"></span> · <strong>put this order number in the payment note</strong></p>
-
-      <div style="margin-top:20px; text-align:left;">
-        <label class="field" for="payment-screenshot-input" style="text-align:center;">Sent it? Upload a screenshot of the payment (optional but speeds up confirmation)</label>
-        <div class="dropzone" id="payment-dropzone">
-          <strong>Add payment screenshot</strong>
-          <small>Tap to upload</small>
-          <input type="file" id="payment-screenshot-input" accept="image/*" hidden>
+    <!-- 2. TRACK ORDER -->
+    <section class="snap-section" id="section-track">
+      <div class="snap-section-inner">
+        <div class="hero" style="padding-top:10px; padding-bottom:0;">
+          <h1 style="font-size:clamp(30px,5vw,40px);">TRACK YOUR <span>ORDER</span></h1>
+          <p>Enter your order number and the phone number you gave us.</p>
         </div>
-        <img id="payment-preview" class="preview-img" alt="Payment screenshot preview">
-        <button type="button" class="send-btn" id="payment-screenshot-btn" style="display:none;">Attach payment screenshot</button>
-        <p class="confirm-id" id="payment-screenshot-status"></p>
+
+        <form class="step" id="track-form" novalidate>
+          <label class="field" for="track-order-number">Order number</label>
+          <input type="text" id="track-order-number" placeholder="FO-1042" autocomplete="off">
+
+          <label class="field" for="track-phone">Phone number</label>
+          <input type="tel" id="track-phone" placeholder="(555) 123-4567" autocomplete="tel">
+
+          <span class="error-msg" id="track-error">We couldn't find that order — double check your order number and phone number.</span>
+
+          <button type="submit" class="send-btn" id="track-submit">TRACK ORDER</button>
+        </form>
+
+        <div class="step" id="track-result" style="display:none;"></div>
       </div>
+    </section>
 
-      <p class="confirm-id" style="margin-top:16px;"><a href="#" id="confirm-track-link" style="color:var(--flame);">Track this order anytime →</a></p>
-    </div>
-  </main>
+    <!-- 3. DEALS -->
+    <section class="snap-section" id="section-deals">
+      <div class="snap-section-inner">
+        <div class="hero" style="padding-top:10px; padding-bottom:0;">
+          <h1 style="font-size:clamp(30px,5vw,44px);">CURRENT <span>DEALS</span></h1>
+          <p>Combo pricing we're running right now — pick one in the order form and we'll tell you the exact total.</p>
+        </div>
+        <div id="deals-list"></div>
+      </div>
+    </section>
 
-  <section class="home-section">
-    <h2>Recent orders 🔥</h2>
-    <div class="recent-orders-grid" id="recent-orders-grid"></div>
-  </section>
+    <!-- 4. MENU -->
+    <section class="snap-section" id="section-menu">
+      <div class="snap-section-inner">
+        <div class="hero" style="padding-top:10px; padding-bottom:0;">
+          <h1 style="font-size:clamp(30px,5vw,44px);">THE <span>MENU</span></h1>
+          <p>Everything we deliver, in one place. Screenshot anything here (or from wherever you're ordering) and send it through the order form.</p>
+        </div>
+        <div id="menu-list"></div>
+      </div>
+    </section>
 
-  <p class="foot">Paul Eats · Screenshot orders, delivered.</p>
+    <!-- 5. ADMIN -->
+    <section class="snap-section" id="section-admin">
+      <div class="snap-section-inner">
+        <div class="admin-cta-card">
+          <div class="admin-cta-icon">P</div>
+          <h2>Admin Dashboard</h2>
+          <p>Orders, today's restaurants, the menu, deals, store hours, and live chat — all in one place.</p>
+          <a class="send-btn" style="display:inline-block; text-decoration:none; padding:15px 34px;" href="admin.html">GO TO ADMIN →</a>
+        </div>
+        <p class="foot">Paul Eats · Screenshot orders, delivered.</p>
+      </div>
+    </section>
+
+  </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="store-status.js"></script>
   <script src="app.js"></script>
+  <script src="track.js"></script>
+  <script src="deals.js"></script>
+  <script src="menu.js"></script>
+  <script src="recent-orders.js"></script>
   <script>
     // Today's 3 featured restaurants — just names, publicly readable
     (async function loadRestaurants() {
@@ -158,7 +264,42 @@
       ).join("");
     })();
   </script>
-  <script src="recent-orders.js"></script>
   <script src="chat.js"></script>
+
+  <!-- ============ SPLASH + SCROLL NAV WIRING ============ -->
+  <script>
+    document.getElementById("splash-continue").addEventListener("click", () => {
+      document.getElementById("splash-screen").classList.add("hidden");
+    });
+
+    const scrollContainer = document.getElementById("scroll-container");
+    const navLinks = [...document.querySelectorAll(".nav-link")];
+    const dotButtons = [...document.querySelectorAll(".dot-rail button")];
+    const sections = [...document.querySelectorAll(".snap-section")];
+
+    function jumpTo(targetId) {
+      const el = document.getElementById(targetId);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    [...navLinks, ...dotButtons].forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        jumpTo(el.dataset.target);
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(l => l.classList.toggle("active", l.dataset.target === id));
+          dotButtons.forEach(d => d.classList.toggle("active", d.dataset.target === id));
+        }
+      });
+    }, { root: scrollContainer, threshold: 0.5 });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
 </body>
 </html>

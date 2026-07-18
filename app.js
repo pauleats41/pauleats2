@@ -19,6 +19,8 @@ function pickHandle(method) {
   return value || "—";
 }
 
+const PENDING_ORDER_KEY = "pauleats_pending_order";
+
 // ---- Elements ----
 const form = document.getElementById("order-form");
 const dropzone = document.getElementById("dropzone");
@@ -28,8 +30,13 @@ const payGrid = document.getElementById("pay-grid");
 const sendBtn = document.getElementById("send-btn");
 const confirmCard = document.getElementById("confirm-card");
 const confirmHandle = document.getElementById("confirm-handle");
+const confirmAmountRow = document.getElementById("confirm-amount-row");
+const confirmAmount = document.getElementById("confirm-amount");
 const confirmId = document.getElementById("confirm-id");
 const confirmTrackLink = document.getElementById("confirm-track-link");
+const startNewOrderLink = document.getElementById("start-new-order-link");
+
+const dealSelect = document.getElementById("deal-select");
 
 const paymentDropzone = document.getElementById("payment-dropzone");
 const paymentInput = document.getElementById("payment-screenshot-input");
@@ -39,9 +46,41 @@ const paymentStatus = document.getElementById("payment-screenshot-status");
 
 let screenshotFile = null;
 let selectedMethod = null;
+let selectedDeal = null; // { id, price } or null
 let placedOrderId = null;
 let placedOrderPhone = null;
 let paymentScreenshotFile = null;
+
+// ---- Load active deals into the picker ----
+async function loadDealOptions() {
+  if (!dealSelect) return;
+  const { data, error } = await supabaseClient
+    .from("deals")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) { console.error(error); return; }
+
+  dealSelect.innerHTML =
+    `<option value="">Not a deal — I'll say my total when I send payment</option>` +
+    data.map(d => `<option value="${d.id}" data-price="${d.price}">${escapeHtmlApp(d.title)} — $${Number(d.price).toFixed(2)}</option>`).join("");
+}
+
+function escapeHtmlApp(str) {
+  const div = document.createElement("div");
+  div.textContent = str || "";
+  return div.innerHTML;
+}
+
+if (dealSelect) {
+  loadDealOptions();
+  dealSelect.addEventListener("change", () => {
+    const opt = dealSelect.selectedOptions[0];
+    const price = opt && opt.dataset.price;
+    selectedDeal = price ? { id: Number(opt.value), price: Number(price) } : null;
+  });
+}
 
 // ---- Order screenshot upload ----
 dropzone.addEventListener("click", () => fileInput.click());
@@ -134,22 +173,27 @@ form.addEventListener("submit", async (e) => {
       p_notes: notes || null,
       p_payment_method: selectedMethod,
       p_payment_handle: handle,
-      p_screenshot_url: screenshotUrl
+      p_screenshot_url: screenshotUrl,
+      p_deal_id: selectedDeal ? selectedDeal.id : null,
+      p_amount: selectedDeal ? selectedDeal.price : null
     });
 
     if (error) throw error;
 
-    placedOrderId = newId;
-    placedOrderPhone = phone;
-
     const friendlyOrderId = `FO-${1041 + newId}`;
 
-    form.style.display = "none";
-    confirmHandle.textContent = handle;
-    confirmId.textContent = friendlyOrderId;
-    confirmTrackLink.href = `track.html?order=${encodeURIComponent(friendlyOrderId)}&phone=${encodeURIComponent(phone)}`;
-    confirmCard.style.display = "block";
-    confirmCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Persist so the "attach payment screenshot" step survives a reload or
+    // switching apps to actually send the payment (e.g. opening Cash App) —
+    // in-memory variables alone don't survive that on a lot of mobile browsers.
+    localStorage.setItem(PENDING_ORDER_KEY, JSON.stringify({
+      orderId: newId,
+      phone,
+      friendlyOrderId,
+      handle,
+      amount: selectedDeal ? selectedDeal.price : null
+    }));
+
+    showConfirmation({ orderId: newId, phone, friendlyOrderId, handle, amount: selectedDeal ? selectedDeal.price : null });
   } catch (err) {
     console.error(err);
     sendBtn.disabled = false;
@@ -157,6 +201,45 @@ form.addEventListener("submit", async (e) => {
     alert("Something went wrong sending your order — check your connection and try again.");
   }
 });
+
+function showConfirmation({ orderId, phone, friendlyOrderId, handle, amount }) {
+  placedOrderId = orderId;
+  placedOrderPhone = phone;
+
+  form.style.display = "none";
+  confirmHandle.textContent = handle;
+  confirmId.textContent = friendlyOrderId;
+  confirmTrackLink.href = `track.html?order=${encodeURIComponent(friendlyOrderId)}&phone=${encodeURIComponent(phone)}`;
+
+  if (amount != null) {
+    confirmAmount.textContent = `$${Number(amount).toFixed(2)}`;
+    confirmAmountRow.style.display = "block";
+  } else {
+    confirmAmountRow.style.display = "none";
+  }
+
+  confirmCard.style.display = "block";
+  confirmCard.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+// Restore an in-progress order (e.g. customer switched to Cash App to pay,
+// then came back) instead of silently failing to attach a payment screenshot.
+(function restorePendingOrder() {
+  const raw = localStorage.getItem(PENDING_ORDER_KEY);
+  if (!raw) return;
+  try {
+    const pending = JSON.parse(raw);
+    showConfirmation(pending);
+  } catch { /* ignore corrupt storage */ }
+})();
+
+if (startNewOrderLink) {
+  startNewOrderLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem(PENDING_ORDER_KEY);
+    window.location.reload();
+  });
+}
 
 // ---- Payment proof screenshot (after order is placed) ----
 paymentDropzone.addEventListener("click", () => paymentInput.click());
@@ -192,6 +275,7 @@ paymentBtn.addEventListener("click", async () => {
 
     paymentBtn.style.display = "none";
     paymentStatus.textContent = "Payment screenshot attached — we'll confirm shortly ✓";
+    localStorage.removeItem(PENDING_ORDER_KEY);
   } catch (err) {
     console.error(err);
     paymentBtn.disabled = false;

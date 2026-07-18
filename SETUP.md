@@ -131,7 +131,16 @@ New admin tab: **Store Status**. Flip the checkbox off and add a reason ("Steppe
 ## 17. Deals (price checker)
 New admin tab: **Deals**. Add a title, price, and optional description (e.g. "Zaxby's Large Meal + Dessert — $10, includes a drink"). Customers browse these at `deals.html` (linked from the homepage) so they know what to screenshot and expect to pay before ordering. This is a straightforward priced list, not a build-your-own combo calculator — if you want customers to pick items and see a live total instead, that's a bigger feature, just ask. Needs the updated `schema.sql` re-run (adds a `deals` table).
 
-## 18. Ongoing costs to watch (updated)
+## 19. New homepage: splash screen + one-page scroll hub
+`index.html` is now a single scrollable page instead of a plain order form: it opens with a "Paul Eats" splash screen (tap Continue to enter), then five full-screen sections you scroll or swipe through in order — **Place Order → Track Order → Deals → Menu → Admin**. The top nav bar (and a small dot rail on mobile) jumps straight to any section and highlights which one you're currently on. `track.html`, `deals.html`, and `menu.html` still exist and work fine as standalone pages too (e.g. for direct links) — the homepage just also includes that same functionality inline so people never have to leave the page.
+
+## 20. Deals now tell customers exactly what to pay
+The order form has a new step: "Is this one of today's deals?" — a dropdown of whatever's active in the admin Deals tab. Picking one locks in that exact price, and the confirmation screen shows a large, unmissable **"Total to send: $X"** instead of just a payment handle with no amount. Picking "Not a deal" keeps the old behavior (customer states their own total when they pay). Needs the updated `schema.sql` re-run — adds `deal_id` and `amount` columns to `orders`, plus a new version of `create_order()` that accepts them.
+
+## 21. Fixed: payment screenshots silently failing to attach
+Found the real cause — the "attach payment screenshot" step only worked if the browser tab stayed open in memory the whole time. In practice, a lot of customers would place the order, switch over to their Cash App/Zelle app to actually send the money, then come back to the browser — and on many phones, switching apps can cause the tab to reload or lose its in-memory state, silently breaking the attach button with no visible error. Order details now get saved to the browser's local storage the moment the order is placed, and restored automatically if the page reloads, so switching apps to pay no longer breaks anything. A "Start a new order instead" link is available if someone wants to clear that and place a different order.
+
+## 22. Ongoing costs to watch (updated)
 Everything above is free at small scale. You'd only start paying if:
 - Your Supabase project exceeds the free tier's database/storage/bandwidth limits (Supabase will email you before this happens).
 - You want a custom domain (e.g. `pauleats.com`) — the domain itself typically costs $10–15/year; the hosting stays free.

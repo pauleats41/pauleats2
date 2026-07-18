@@ -28,12 +28,12 @@ async function loadMenu() {
 
   listEl.innerHTML = Object.entries(byCategory).map(([category, items]) => `
     <div class="menu-category">
-      <h2>${escapeHtml(category)}</h2>
+      <h2>${escapeHtmlMenu(category)}</h2>
       ${items.map(item => `
         <div class="menu-item">
           <div>
-            <div class="mi-name">${escapeHtml(item.name)}</div>
-            ${item.description ? `<div class="mi-desc">${escapeHtml(item.description)}</div>` : ""}
+            <div class="mi-name">${escapeHtmlMenu(item.name)}</div>
+            ${item.description ? `<div class="mi-desc">${escapeHtmlMenu(item.description)}</div>` : ""}
           </div>
           ${item.price != null ? `<div class="mi-price">$${Number(item.price).toFixed(2)}</div>` : ""}
         </div>
@@ -42,7 +42,7 @@ async function loadMenu() {
   `).join("");
 }
 
-function escapeHtml(str) {
+function escapeHtmlMenu(str) {
   const div = document.createElement("div");
   div.textContent = str || "";
   return div.innerHTML;
