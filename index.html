@@ -291,10 +291,14 @@
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
+        const inner = entry.target.querySelector(".snap-section-inner");
         if (entry.isIntersecting) {
           const id = entry.target.id;
           navLinks.forEach(l => l.classList.toggle("active", l.dataset.target === id));
           dotButtons.forEach(d => d.classList.toggle("active", d.dataset.target === id));
+          if (inner) inner.classList.add("in-view");
+        } else if (inner) {
+          inner.classList.remove("in-view");
         }
       });
     }, { root: scrollContainer, threshold: 0.5 });
