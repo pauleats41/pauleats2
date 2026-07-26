@@ -222,6 +222,21 @@ function showConfirmation({ orderId, phone, friendlyOrderId, handle, amount }) {
   confirmCard.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+const copyOrderNumberBtn = document.getElementById("copy-order-number-btn");
+if (copyOrderNumberBtn) {
+  copyOrderNumberBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(confirmId.textContent);
+      const original = copyOrderNumberBtn.textContent;
+      copyOrderNumberBtn.textContent = "Copied ✓";
+      setTimeout(() => { copyOrderNumberBtn.textContent = original; }, 1500);
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't copy automatically — just type it in manually: " + confirmId.textContent);
+    }
+  });
+}
+
 // Restore an in-progress order (e.g. customer switched to Cash App to pay,
 // then came back) instead of silently failing to attach a payment screenshot.
 (function restorePendingOrder() {

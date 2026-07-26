@@ -152,7 +152,11 @@
             <div class="v" id="confirm-amount"></div>
           </div>
 
-          <p class="confirm-id">Order <span id="confirm-id"></span> · <strong>put this order number in the payment note</strong></p>
+          <p class="confirm-id" style="margin-bottom:6px;"><strong>Put this order number in your payment note:</strong></p>
+          <div class="order-number-copy-row">
+            <span id="confirm-id" class="order-number-display"></span>
+            <button type="button" id="copy-order-number-btn" class="icon-btn">Copy</button>
+          </div>
 
           <div style="margin-top:20px; text-align:left;">
             <label class="field" for="payment-screenshot-input" style="text-align:center;">Sent it? Upload a screenshot of the payment (optional but speeds up confirmation)</label>

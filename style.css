@@ -995,3 +995,21 @@ body.auth-pending .modal-backdrop { display: none !important; }
   background: linear-gradient(135deg, var(--ember), var(--flame));
   border-color: var(--flame);
 }
+
+/* ---------- Customer order-number copy row ---------- */
+.order-number-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 6px 0 4px;
+}
+.order-number-display {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  color: var(--ember);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
