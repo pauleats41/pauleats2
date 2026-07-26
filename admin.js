@@ -116,7 +116,7 @@ function renderRows(orders) {
       <td><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-muted)">${friendlyId(o)}</span></td>
       <td><strong>${escapeHtml(o.name)}</strong><br><span style="color:var(--text-muted); font-size:12px">${escapeHtml(o.phone)}</span></td>
       <td>${PAYMENT_LABELS[o.payment_method] || o.payment_method}${o.amount != null ? ` · $${Number(o.amount).toFixed(2)}` : ""}<br>${paymentProofBadge(o)}</td>
-      <td><span class="badge ${o.status}">${o.status}</span></td>
+      <td><span class="badge ${o.status}">${o.status}</span>${o.status === "delivered" && o.completed_by ? `<br><span style="color:var(--text-muted); font-size:10.5px;">by ${escapeHtml(o.completed_by)}</span>` : ""}</td>
       <td style="color:var(--text-muted); font-size:12.5px">${fmtTime(o.created_at)}</td>
     </tr>
   `).join("");
@@ -176,6 +176,7 @@ function openModal(id) {
     <div class="detail-row"><span class="k">Payment</span><span class="v">${PAYMENT_LABELS[order.payment_method] || order.payment_method}${order.payment_handle ? ` → ${escapeHtml(order.payment_handle)}` : ""}${order.amount != null ? ` · $${Number(order.amount).toFixed(2)}` : ""}</span></div>
     <div class="detail-row"><span class="k">Payment proof</span><span class="v">${order.payment_screenshot_url ? `<span class="badge delivered">attached ✓</span>` : `<span class="badge new">none yet</span>`}</span></div>
     <div class="detail-row"><span class="k">Status</span><span class="v"><span class="badge ${order.status}">${order.status}</span></span></div>
+    ${order.completed_by ? `<div class="detail-row"><span class="k">Completed by</span><span class="v">${escapeHtml(order.completed_by)}</span></div>` : ""}
     ${order.notes ? `<div class="detail-row"><span class="k">Notes</span><span class="v">${escapeHtml(order.notes)}</span></div>` : ""}
     ${order.payment_screenshot_url ? `<div style="margin-top:10px;"><div class="k" style="font-size:12.5px; color:var(--text-muted); margin-bottom:6px;">Payment screenshot</div><img class="modal-img" src="${order.payment_screenshot_url}" alt="Payment screenshot"></div>` : ""}
 
@@ -244,7 +245,14 @@ function closeModal() { backdrop.style.display = "none"; }
 backdrop.addEventListener("click", e => { if (e.target === backdrop) closeModal(); });
 
 async function updateStatus(id, status) {
-  const { error } = await supabaseClient.from("orders").update({ status }).eq("id", id);
+  const updates = { status };
+
+  if (status === "delivered") {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    updates.completed_by = user ? user.email : null;
+  }
+
+  const { error } = await supabaseClient.from("orders").update(updates).eq("id", id);
   if (error) console.error(error);
   closeModal();
   // loadOrders() also fires automatically via the realtime subscription

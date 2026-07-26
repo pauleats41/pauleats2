@@ -82,6 +82,37 @@ if (dealSelect) {
   });
 }
 
+// ---- Image compression (fixes "file too big" failures on phone photos/HEIC) ----
+async function compressImage(file, maxDimension = 1600, quality = 0.8) {
+  // Small files don't need it — skip straight through
+  if (file.size < 700 * 1024) return file;
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    let { width, height } = bitmap;
+
+    if (width > maxDimension || height > maxDimension) {
+      const scale = maxDimension / Math.max(width, height);
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").drawImage(bitmap, 0, 0, width, height);
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", quality));
+    if (!blob) return file;
+
+    const newName = (file.name || "photo").replace(/\.\w+$/, "") + ".jpg";
+    return new File([blob], newName, { type: "image/jpeg" });
+  } catch (err) {
+    console.error("Image compression failed — uploading original file instead:", err);
+    return file; // never block the upload just because compression failed
+  }
+}
+
 // ---- Order screenshot upload ----
 dropzone.addEventListener("click", () => fileInput.click());
 ["dragover", "dragenter"].forEach(evt =>
@@ -97,16 +128,18 @@ fileInput.addEventListener("change", e => {
   if (e.target.files[0]) handleFile(e.target.files[0]);
 });
 
-function handleFile(file) {
+async function handleFile(file) {
   if (!file.type.startsWith("image/")) return;
-  screenshotFile = file;
+  preview.alt = "Compressing…";
+  const compressed = await compressImage(file);
+  screenshotFile = compressed;
   const reader = new FileReader();
   reader.onload = e => {
     preview.src = e.target.result;
     preview.style.display = "block";
     clearError("err-screenshot");
   };
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(compressed);
 }
 
 // ---- Payment method selection ----
@@ -198,7 +231,10 @@ form.addEventListener("submit", async (e) => {
     console.error(err);
     sendBtn.disabled = false;
     sendBtn.textContent = "SEND ORDER";
-    alert("Something went wrong sending your order — check your connection and try again.");
+    const msg = (err && err.message) || "";
+    alert(/size|large|payload/i.test(msg)
+      ? "That screenshot is still too large to upload — try cropping it tighter or taking a lower-res screenshot."
+      : "Something went wrong sending your order — check your connection and try again.");
   }
 });
 
@@ -258,17 +294,18 @@ if (startNewOrderLink) {
 
 // ---- Payment proof screenshot (after order is placed) ----
 paymentDropzone.addEventListener("click", () => paymentInput.click());
-paymentInput.addEventListener("change", e => {
+paymentInput.addEventListener("change", async e => {
   const file = e.target.files[0];
   if (!file || !file.type.startsWith("image/")) return;
-  paymentScreenshotFile = file;
+  const compressed = await compressImage(file);
+  paymentScreenshotFile = compressed;
   const reader = new FileReader();
   reader.onload = ev => {
     paymentPreview.src = ev.target.result;
     paymentPreview.style.display = "block";
     paymentBtn.style.display = "block";
   };
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(compressed);
 });
 
 paymentBtn.addEventListener("click", async () => {
@@ -295,6 +332,9 @@ paymentBtn.addEventListener("click", async () => {
     console.error(err);
     paymentBtn.disabled = false;
     paymentBtn.textContent = "Attach payment screenshot";
-    paymentStatus.textContent = "Couldn't attach that — try again.";
+    const msg = (err && err.message) || "";
+    paymentStatus.textContent = /size|large|payload/i.test(msg)
+      ? "That file is still too large — try a screenshot instead of a full-res photo, or crop it tighter."
+      : "Couldn't attach that — try again.";
   }
 });
