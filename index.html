@@ -6,7 +6,7 @@
 <title>Harold Eats × btclovex — Send us your order</title>
 <meta name="description" content="Send a screenshot of what you want, your name, address, and number. Pay with CashApp, Apple Pay, PayPal, or Zelle." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -53,20 +53,10 @@
         <textarea id="notes" placeholder="Allergies, substitutions, extra sauce…"></textarea>
       </div>
 
-      <!-- Step 2: today's deals -->
+      <!-- Step 2 -->
       <div class="step">
         <div class="step-head">
           <span class="step-num">2</span>
-          <h2>One of today's deals?</h2>
-        </div>
-        <p class="step-sub">If your order matches a deal below, pick it and we'll use that price. Not sure? Choose "No deal" and we'll look for the best one to match your order.</p>
-        <div class="deal-picker" id="deal-picker"><p class="menu-empty">Loading today's deals…</p></div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="step">
-        <div class="step-head">
-          <span class="step-num">3</span>
           <h2>Where's it going?</h2>
         </div>
 
@@ -86,7 +76,7 @@
       <!-- Step 3 -->
       <div class="step">
         <div class="step-head">
-          <span class="step-num">4</span>
+          <span class="step-num">3</span>
           <h2>How you paying?</h2>
         </div>
         <p class="step-sub">You'll get a handle to send to on the next screen.</p>
@@ -150,7 +140,6 @@
   <script src="config.js"></script>
   <script src="store-status.js"></script>
   <script src="app.js"></script>
-  <script src="order-deals.js"></script>
   <script>
     // Today's 3 featured restaurants — just names, publicly readable
     (async function loadRestaurants() {

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Orders dashboard — Harold Eats × btclovex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="auth-pending">
@@ -32,6 +32,7 @@
       <button class="admin-tab-btn" data-tab="restaurants">Today's Restaurants</button>
       <button class="admin-tab-btn" data-tab="menu">Menu</button>
       <button class="admin-tab-btn" data-tab="deals">Deals</button>
+      <button class="admin-tab-btn" data-tab="payments">Payments</button>
       <button class="admin-tab-btn" data-tab="chat">Chat</button>
     </div>
 
@@ -113,6 +114,22 @@
       <div id="deal-admin-list" style="margin-top:20px;"></div>
     </div>
 
+    <!-- PAYMENTS -->
+    <div class="admin-panel" id="panel-payments">
+      <p style="color:var(--text-muted); font-size:13.5px; margin-top:0;">Where customers send money. Add as many as you like per method — if a method has more than one active, each order gets one at random. A method with no active handle is hidden from the order form.</p>
+      <form class="menu-form-grid pay-form" id="payment-form">
+        <select id="pay-method" required>
+          <option value="cashapp">Cash App</option>
+          <option value="applepay">Apple Pay</option>
+          <option value="paypal">PayPal</option>
+          <option value="zelle">Zelle</option>
+        </select>
+        <input type="text" id="pay-handle" placeholder="Handle (e.g. $YourCashApp, you@email.com, phone)" required>
+        <button type="submit" class="send-btn" style="margin-top:0;">Add</button>
+      </form>
+      <div id="payment-admin-list" style="margin-top:20px;"></div>
+    </div>
+
     <!-- CHAT -->
     <div class="admin-panel" id="panel-chat">
       <div class="chat-layout">
@@ -141,6 +158,7 @@
   <script src="admin-restaurants.js"></script>
   <script src="admin-menu.js"></script>
   <script src="admin-deals.js"></script>
+  <script src="admin-payments.js"></script>
   <script src="admin-chat.js"></script>
   <script>
     // Tab switching

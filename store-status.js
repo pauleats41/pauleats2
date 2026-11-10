@@ -19,7 +19,7 @@ async function loadStoreStatus() {
     if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = "SEND ORDER"; }
   } else {
     bannerEl.innerHTML = `
-      <div class="step" style="border-color: var(--flame-dim); background: rgba(255,70,32,0.08); text-align:center;">
+      <div class="step" style="border-color: var(--flame-dim); background: rgba(59,130,246,0.08); text-align:center;">
         <h2 style="font-family:var(--font-display); font-weight:400; margin:0 0 6px;">We're closed right now</h2>
         <p style="color:var(--text-muted); margin:0;">${escapeHtmlStore(data.reason) || "Back soon — check back shortly."}</p>
       </div>

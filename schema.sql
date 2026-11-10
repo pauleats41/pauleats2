@@ -60,3 +60,40 @@ create policy "Public can view screenshots"
   on storage.objects for select
   to public
   using (bucket_id = 'screenshots');
+
+-- ============================================================
+-- Payment handles (editable in Admin → Payments)
+-- Safe to re-run.
+-- ============================================================
+create table if not exists payment_handles (
+  id         bigint generated always as identity primary key,
+  method     text not null check (method in ('cashapp','applepay','paypal','zelle')),
+  handle     text not null,
+  is_active  boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+alter table payment_handles enable row level security;
+
+drop policy if exists "Public can read active payment handles" on payment_handles;
+create policy "Public can read active payment handles"
+  on payment_handles for select
+  to anon, authenticated
+  using (is_active = true);
+
+drop policy if exists "Admins manage payment handles" on payment_handles;
+create policy "Admins manage payment handles"
+  on payment_handles for all
+  to authenticated
+  using (true) with check (true);
+
+-- Seed with the handles that were in orders.json (only if the table is empty)
+insert into payment_handles (method, handle)
+select * from (values
+  ('cashapp','$3raqu1a'),
+  ('cashapp','$KasimeBernardJr'),
+  ('applepay','(404) 543-5509'),
+  ('paypal','paypal.me/a5sxe'),
+  ('zelle','(678) 923-4967')
+) as v(method, handle)
+where not exists (select 1 from payment_handles);

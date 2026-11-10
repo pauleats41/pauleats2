@@ -1,21 +1,44 @@
-// Payment handles are just display info, not sensitive — fine to keep in a JSON file.
-// Each method can be a single string OR an array of strings (e.g. multiple Cash Apps) —
-// if it's an array, one is picked at random per order and saved with the order itself.
-let PAYMENT_HANDLES = {
-  cashapp: ["$3raqu1a", "$KasimeBernardJr"],
-  applepay: "(404) 543-5509",
-  paypal: "paypal.me/a5sxe",
-  zelle: "(678) 923-4967"
-};
+// Payment handles are managed in Admin → Payments (stored in the payment_handles table).
+// orders.json is only a fallback if the table is empty or can't be reached.
+// Each method can have several handles — one is picked at random per order and saved with it.
+let PAYMENT_HANDLES = {};
 
-fetch("orders.json")
-  .then(r => r.json())
-  .then(data => { if (data.paymentHandles) PAYMENT_HANDLES = data.paymentHandles; })
-  .catch(() => { /* fallback values above still work */ });
+function applyPaymentAvailability() {
+  if (!Object.keys(PAYMENT_HANDLES).length) return; // nothing loaded — don't hide every option
+  document.querySelectorAll("#pay-grid .pay-option").forEach(opt => {
+    const has = [].concat(PAYMENT_HANDLES[opt.dataset.method] || []).length > 0;
+    opt.style.display = has ? "" : "none";
+    if (!has && selectedMethod === opt.dataset.method) {
+      selectedMethod = null;
+      opt.classList.remove("selected");
+    }
+  });
+}
+
+async function loadPaymentHandles() {
+  try {
+    const r = await fetch("orders.json");
+    const data = await r.json();
+    if (data.paymentHandles) PAYMENT_HANDLES = data.paymentHandles;
+  } catch (e) { /* fall through to database */ }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("payment_handles").select("method, handle")
+      .eq("is_active", true).order("id", { ascending: true });
+    if (!error && data && data.length) {
+      const map = {};
+      data.forEach(row => { (map[row.method] = map[row.method] || []).push(row.handle); });
+      PAYMENT_HANDLES = map;
+    }
+  } catch (e) { /* keep fallback */ }
+
+  applyPaymentAvailability();
+}
 
 function pickHandle(method) {
   const value = PAYMENT_HANDLES[method];
-  if (Array.isArray(value)) return value[Math.floor(Math.random() * value.length)];
+  if (Array.isArray(value)) return value[Math.floor(Math.random() * value.length)] || "—";
   return value || "—";
 }
 
@@ -107,9 +130,7 @@ form.addEventListener("submit", async (e) => {
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const address = document.getElementById("address").value.trim();
-  const rawNotes = document.getElementById("notes").value.trim();
-  const dealTag = (typeof getSelectedDealTag === "function") ? getSelectedDealTag() : "";
-  const notes = [dealTag, rawNotes].filter(Boolean).join("\n");
+  const notes = document.getElementById("notes").value.trim();
 
   let valid = true;
   if (!screenshotFile) { showError("err-screenshot"); valid = false; } else clearError("err-screenshot");
@@ -199,3 +220,5 @@ paymentBtn.addEventListener("click", async () => {
     paymentStatus.textContent = "Couldn't attach that — try again.";
   }
 });
+
+loadPaymentHandles();

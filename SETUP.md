@@ -140,3 +140,6 @@ Everything above is free at small scale. You'd only start paying if:
 - Orders now live in Supabase's Postgres database, not the browser — so a customer ordering from their phone shows up instantly on your laptop's dashboard (thanks to the realtime subscription in `admin.js`).
 - Admin login is real Supabase Auth now (email + password checked server-side), not the client-side password hash from before — this is actually secure.
 - Row Level Security policies are what keep customers from reading or editing each other's orders, and keep the orders table private from the public internet — don't remove them.
+
+## 19. Payment handles are now editable in the admin panel
+Run `payment_handles.sql` once in the Supabase SQL Editor (it's also appended to `schema.sql`). It creates the `payment_handles` table and seeds it with the handles from `orders.json`. After that, manage Cash App / Apple Pay / PayPal / Zelle from **Admin → Payments**: add, edit, hide/show, or delete. Multiple handles per method are picked at random per order. `orders.json` is now only a fallback.
